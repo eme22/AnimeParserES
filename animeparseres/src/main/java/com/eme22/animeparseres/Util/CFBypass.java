@@ -17,7 +17,6 @@ public class CFBypass {
     private static WebView webView;
     private static onResult onResult;
     private static DelayedAction cancel;
-    private static DelayedAction judge;
 
     @SuppressLint("SetJavaScriptEnabled")
     public static void init(WebView webView2, String url, final onResult onDone ){
@@ -34,15 +33,13 @@ public class CFBypass {
 
         webView.loadUrl(url);
 
-        judge = new DelayedAction(() -> isbypass(), 500);
+        new DelayedAction(CFBypass::isbypass, 500);
 
 
     }
 
     private static void isbypass() {
-        if (webView.getTitle().contains("bot")) cancel = new DelayedAction(() -> {
-            result(webView.getUrl());
-        },20000-500);
+        if (webView.getTitle().contains("bot")) cancel = new DelayedAction(() -> result(webView.getUrl()),19500);
         else {
             result(webView.getUrl());
         }
@@ -68,7 +65,7 @@ public class CFBypass {
 
         webView.loadUrl(url);
 
-        judge = new DelayedAction(CFBypass::isbypass, 500);
+        new DelayedAction(CFBypass::isbypass, 500);
     }
 
     private static void destroyWebView() {

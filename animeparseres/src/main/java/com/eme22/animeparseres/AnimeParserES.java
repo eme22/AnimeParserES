@@ -149,20 +149,28 @@ public class AnimeParserES {
         else onBulkComplete.onError();
     }
 
-    /*
-    @SuppressWarnings("deprecation")
-    public static String escape(String text) {
-        if (Build.VERSION.SDK_INT >= 24)
-        {
-           return Html.fromHtml(text , Html.FROM_HTML_MODE_LEGACY).toString();
-        }
-        else
-        {
-            return Html.fromHtml(text).toString();
-        }
+    public static String getFlvCookies() {
+        return flvCookies;
     }
 
-     */
+    public static void setFlvCookies(String flvCookies) {
+        AnimeParserES.flvCookies = flvCookies;
+    }
+
+    /*
+        @SuppressWarnings("deprecation")
+        public static String escape(String text) {
+            if (Build.VERSION.SDK_INT >= 24)
+            {
+               return Html.fromHtml(text , Html.FROM_HTML_MODE_LEGACY).toString();
+            }
+            else
+            {
+                return Html.fromHtml(text).toString();
+            }
+        }
+
+         */
     public void onFinish(OnTaskCompleted onComplete) {
         this.onComplete = onComplete;
     }
