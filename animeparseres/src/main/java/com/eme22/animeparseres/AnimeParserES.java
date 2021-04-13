@@ -33,7 +33,6 @@ import okhttp3.OkHttpClient;
 public class AnimeParserES {
 
     private static boolean animeIDAditionalLinks = false;
-    private static boolean animeIDImageApi = false;
 
     private static String flvCookies = null;
 
@@ -82,12 +81,42 @@ public class AnimeParserES {
         AnimeParserES.animeIDAditionalLinks = animeIDAditionalLinksIn;
     }
 
-    public static boolean isAnimeIDImageApiEnabled() {
-        return animeIDImageApi;
-    }
+    public void load(String url, OnTaskCompleted onComplete2){
+        onComplete = onComplete2;
+        if (check(animeFLVEpisode,url)){
+            AnimeFLVEpisode.fetch(context,url, onComplete);
+        }
+        else if (check(animeFLVAnime, url)){
+            AnimeFLVAnime.fetch(context ,url,onComplete);
+        }
+        else if (check(animeJKEpisode,url)){
+            AnimeJKEpisode.fetch(url, onComplete);
+        }
+        else if (check(animeJKAnime, url)){
+            AnimeJKAnime.fetch(url,onComplete);
+        }
 
-    public static void setAnimeIDImageApi(boolean animeIDImageApi) {
-        AnimeParserES.animeIDImageApi = animeIDImageApi;
+        else if (check(animeIDEpisode,url)){
+            AnimeIDEpisode.fetch(url, onComplete);
+        }
+        else if (check(animeIDAnime, url)){
+            AnimeIDAnime.fetch(url,onComplete);
+        }
+        /*
+        else if (check(animeTioEpisode,url)){
+            AnimeTioEpisode.fetch(url, onComplete);
+        }
+        else if (check(animeTioAnime, url)){
+            AnimeTioAnime.fetch(url,onComplete);
+        }
+        else if (check(animeFLVRUEpisode,url)){
+            AnimeFLVRUEpisode.fetch(url, onComplete);
+        }
+        else if (check(animeFlvRuAnime, url)){
+            AnimeFLVRUAnime.fetch(url,onComplete);
+        }
+        */
+        else onComplete.onError();
     }
 
     public void load(String url){
@@ -127,7 +156,9 @@ public class AnimeParserES {
         else loadBulk(url);
     }
 
-    public void loadBulk(String url){
+    public void loadBulk(String url, OnBulkTaskCompleted onBulkTaskCompleted){
+        if (onBulkTaskCompleted!=null) onBulkComplete = onBulkTaskCompleted;
+
         if (url.contains(animeFlV)){
             AnimeFLVBulk.fetch(context,url,onBulkComplete);
         }
@@ -147,6 +178,10 @@ public class AnimeParserES {
 
          */
         else onBulkComplete.onError();
+    }
+
+    public void loadBulk(String url){
+        loadBulk(url,null);
     }
 
     public static String getFlvCookies() {
