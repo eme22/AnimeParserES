@@ -14,6 +14,7 @@ import com.eme22.animeparseres.AnimeParserES;
 public class CFBypass {
 
     private static final String TAG = "CFBypass";
+    @SuppressLint("StaticFieldLeak")
     private static WebView webView;
     private static onResult onResult;
     private static DelayedAction cancel;
