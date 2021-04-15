@@ -1,5 +1,6 @@
 package com.eme22.animeparseresexample;
 
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.os.Bundle;
@@ -21,11 +22,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.eme22.animeparseres.AnimeParserES;
+import com.eme22.animeparseres.AnimeParserES2;
+import com.eme22.animeparseres.Model.AnimeError;
 import com.eme22.animeparseres.Model.MiniModel;
 import com.eme22.animeparseres.Model.Model;
 import com.eme22.animeparseres.Model.WebModel;
 import com.eme22.animeparseres.Util.BypassInfo;
 import com.eme22.animeparseres.Util.CFBypass;
+import com.eme22.animeparseres.Util.CFBypassSync;
 import com.eme22.animeparseresexample.adapters.AnimeAdapter;
 import com.eme22.animeparseresexample.adapters.CategoriesAdapter;
 import com.eme22.animeparseresexample.adapters.EpisodeAdapter;
@@ -37,6 +41,12 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
@@ -51,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
     View multiple;
 
     Snackbar bypassSnack = null;
+
+    ExecutorService executor = Executors.newFixedThreadPool(10);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,15 +186,87 @@ public class MainActivity extends AppCompatActivity {
         });
 
  */
-        letGo("https://www3.animeflv.net/");
+
+
+        //executor.submit(new CFBypassSync(findViewById(R.id.aaatest),"https://www3.animeflv.net/"));
+
+//        letGo("https://www3.animeflv.net/");
+
+
+        try {
+            AnimeParserES2.getInstance().getForWebsite("https://www3.animeflv.net/", new AnimeParserES2.OnTaskCompleted() {
+                @Override
+                public void onTaskCompleted(Object animes) {
+                    loadlist((WebModel) animes);
+                }
+
+                @Override
+                public void onError(AnimeError error) {
+                    error.printStackTrace();
+                }
+            });
+        } catch (AnimeError error) { error.printStackTrace(); }
+
+        /*executor.submit(() -> {
+            try {
+                AnimeParserES2 parserES2 =AnimeParserES2.getInstance();
+                parserES2.setBypassWebView(findViewById(R.id.aaatest));
+                WebModel model = parserES2.executeForWebSite("https://www3.animeflv.net/");
+                MainActivity.this.runOnUiThread(() -> loadlist(model));
+            } catch (AnimeError error) {
+                error.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (TimeoutException e) {
+                e.printStackTrace();
+            }
+        });
+
+         */
+
+
     }
 
     public void jkan(View view){
-        letGo("https://jkanime.net/");
+        executor.submit(() -> {
+            try {
+                AnimeParserES2 parserES2 = AnimeParserES2.getInstance();
+                WebModel model = parserES2.executeForWebSite("https://jkanime.net/");
+                MainActivity.this.runOnUiThread(() -> loadlist(model));
+            } catch (AnimeError error) {
+                error.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (TimeoutException e) {
+                e.printStackTrace();
+            }
+        });
+
+        //letGo("https://jkanime.net/");
     }
 
     public void idan(View view){
-        letGo("https://www.animeid.tv/");
+        executor.submit(() -> {
+            try {
+                AnimeParserES2 parserES2 = AnimeParserES2.getInstance();
+                WebModel model = parserES2.executeForWebSite("https://www.animeid.tv/");
+                MainActivity.this.runOnUiThread(() -> loadlist(model));
+            } catch (AnimeError error) {
+                error.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (TimeoutException e) {
+                e.printStackTrace();
+            }
+        });
+
+        //letGo("https://www.animeid.tv/");
     }
 
 
@@ -191,7 +275,21 @@ public class MainActivity extends AppCompatActivity {
             progressBar.setVisibility(View.VISIBLE);
             if (multiple.getVisibility() == View.VISIBLE) multiple.setVisibility(View.GONE);
             if (anime.getVisibility() == View.VISIBLE) anime.setVisibility(View.GONE);
-            parserES.load(url);
+            //parserES.load(url);
+            executor.submit(() -> {
+                try {
+                    AnimeParserES2 parserES2 = AnimeParserES2.getInstance();
+                    parserES2.setBypassWebView(findViewById(R.id.aaatest));
+                    Model model = parserES2.executeForSingle(url);
+                    MainActivity.this.runOnUiThread(() -> loadanime(model,model.getCategories() == null));
+                } catch (AnimeError error) {
+                    error.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
         }
     }
 

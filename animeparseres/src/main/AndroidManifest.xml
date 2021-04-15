@@ -1,1 +1,12 @@
-<manifest package="com.eme22.animeparseres"/>
+
+<manifest package="com.eme22.animeparseres"
+xmlns:android="http://schemas.android.com/apk/res/android">
+<application>
+    <provider
+        android:authorities="${applicationId}.AnimeParserContentProvider"
+        android:exported="false"
+        android:enabled="true"
+        android:name=".AnimeParserContentProvider" />
+</application>
+
+</manifest>

@@ -13,7 +13,6 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.eme22.animeparseres.Model.MiniModel;
 import com.eme22.animeparseresexample.R;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -40,17 +39,35 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.EpisodeA
     public void onBindViewHolder(@NonNull EpisodeAdapter.EpisodeAdapterViewHolder holder, int position) {
         MiniModel item = episodes.get(position);
         Log.d("image", item.getImage());
-        Picasso.get().load(item.getImage()).placeholder(new CircularProgressDrawable(holder.image.getContext())).into(holder.image, new Callback() {
-            @Override
-            public void onSuccess() {
+/*
+        String cookies = AnimeParserES2.getInstance().getFlvCookies();
 
-            }
+        if (cookies != null){
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .addInterceptor(chain -> {
+                        Request newRequest = chain.request().newBuilder()
+                                .addHeader("cookie", cookies)
+                                .build();
+                        return chain.proceed(newRequest);
+                    })
+                    .build();
 
-            @Override
-            public void onError(Exception e) {
-                e.printStackTrace();
+            Picasso picasso = new Picasso.Builder(holder.image.getContext())
+                    .downloader(new OkHttp3Downloader(client))
+                    .build();
+            try {
+                picasso.load(item.getImage()).placeholder(new CircularProgressDrawable(holder.image.getContext())).into(holder.image);
             }
-        });
+            catch (Exception e) {e.printStackTrace();}
+        }
+        else {
+ */
+            try {
+                Picasso.get().load(item.getImage()).placeholder(new CircularProgressDrawable(holder.image.getContext())).into(holder.image);
+            }
+            catch (Exception e) {e.printStackTrace();}
+        //}
+
         holder.title.setText(item.getTitle()+" - Episodio: "+ item.getEpisode());
     }
 

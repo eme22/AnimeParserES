@@ -2,14 +2,18 @@ package com.eme22.animeparseres.Util;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.webkit.CookieManager;
+import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.eme22.animeparseres.AnimeParserES;
+import com.eme22.animeparseres.AnimeParserES2;
 
 public class CFBypass {
 
@@ -17,56 +21,44 @@ public class CFBypass {
     @SuppressLint("StaticFieldLeak")
     private static WebView webView;
     private static onResult onResult;
-    private static DelayedAction cancel;
+
+    private static final Handler handler = new Handler(Looper.getMainLooper());
 
     @SuppressLint("SetJavaScriptEnabled")
-    public static void init(WebView webView2, String url, final onResult onDone ){
+    public static void init(String url, final onResult onDone ){
+
         onResult = onDone;
-        webView = webView2;
+        webView = new WebView(AnimeParserES2.getInstance().getContext());
+        WebSettings myWebSettings = webView.getSettings();
+        myWebSettings.setUserAgentString(AnimeParserES.agent);
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.setWebChromeClient(new WebChromeClient(){
+            @Override
+            public void onReceivedTitle(WebView view, String title) {
+                isbypass();
+            }
+        });
         webView.setWebViewClient(new WebViewClient(){
+
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 result(webView.getUrl());
                 return true;
             }
+
         });
 
         webView.loadUrl(url);
-
-        new DelayedAction(CFBypass::isbypass, 500);
-
 
     }
 
     private static void isbypass() {
-        if (webView.getTitle().contains("bot")) cancel = new DelayedAction(() -> result(webView.getUrl()),19500);
+        if (webView.getTitle() == null) return;
+        if (webView.getTitle().contains("bot"))
+            handler.postDelayed(() -> result(webView.getUrl()), 19500);
         else {
             result(webView.getUrl());
         }
-    }
-
-    @SuppressLint("SetJavaScriptEnabled")
-    public static void init(Context context, String url, final onResult onDone ){
-
-        onResult = onDone;
-        webView = new WebView(context);
-        WebSettings myWebSettings = webView.getSettings();
-        myWebSettings.setUserAgentString(AnimeParserES.agent);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.setWebViewClient(new WebViewClient(){
-
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                result(webView.getUrl());
-                return true;
-            }
-
-        });
-
-        webView.loadUrl(url);
-
-        new DelayedAction(CFBypass::isbypass, 500);
     }
 
     private static void destroyWebView() {
@@ -83,17 +75,17 @@ public class CFBypass {
 
     private static void result(String url) {
 
-        if (cancel != null) cancel.cancel();
+        handler.removeCallbacks(null);
         destroyWebView();
         Log.d(TAG,"Fucked: " + url);
 
-        CookieManager cookies = CookieManager.getInstance();
+        String cookies = CookieManager.getInstance().getCookie(url);
         onResult.onCookieGrab(cookies);
     }
 
     public interface onResult{
 
-        void onCookieGrab(CookieManager cookieJar);
+        void onCookieGrab(String cookies);
 
     }
 
