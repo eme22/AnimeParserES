@@ -3,9 +3,9 @@ package com.eme22.animeparseres.Sites.Special;
 import android.util.Log;
 
 import com.androidnetworking.AndroidNetworking;
-import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.StringRequestListener;
+import com.androidnetworking.common.ANResponse;
 import com.eme22.animeparseres.AnimeParserES;
+import com.eme22.animeparseres.Model.AnimeError;
 import com.eme22.animeparseres.Model.MiniModel;
 import com.eme22.animeparseres.Model.Model;
 import com.eme22.animeparseres.Model.WebModel;
@@ -23,21 +23,16 @@ public class AnimeJKBulk {
 
     //private static final String urlprefix = "https://jkanime.net/";
 
-    public static void fetch(String url, AnimeParserES.OnBulkTaskCompleted onBulkComplete) {
+    @SuppressWarnings("unchecked")
+    public static WebModel fetch(String url) throws AnimeError {
         Log.d(TAG, "Requesting: "+url);
-        AndroidNetworking.get(url).setUserAgent(AnimeParserES.agent).build().getAsString(new StringRequestListener() {
-            @Override
-            public void onResponse(String response) {
-                WebModel model = parse(response, url);
-                onBulkComplete.onTaskCompleted(model);
-            }
 
-            @Override
-            public void onError(ANError anError) {
-                anError.printStackTrace();
-                onBulkComplete.onError();
-            }
-        });
+        ANResponse<String> response = AndroidNetworking.get(url).setUserAgent(AnimeParserES.agent).build().executeForString();
+        if (response.isSuccess()){
+            return parse(response.getResult(), url);
+        }else {
+            throw new AnimeError(response.getError().getErrorCode());
+        }
 
     }
 

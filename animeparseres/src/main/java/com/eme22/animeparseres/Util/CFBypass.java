@@ -1,7 +1,6 @@
 package com.eme22.animeparseres.Util;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -13,7 +12,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.eme22.animeparseres.AnimeParserES;
-import com.eme22.animeparseres.AnimeParserES2;
 
 public class CFBypass {
 
@@ -28,7 +26,7 @@ public class CFBypass {
     public static void init(String url, final onResult onDone ){
 
         onResult = onDone;
-        webView = new WebView(AnimeParserES2.getInstance().getContext());
+        webView = new WebView(AnimeParserES.getInstance().getContext());
         WebSettings myWebSettings = webView.getSettings();
         myWebSettings.setUserAgentString(AnimeParserES.agent);
         webView.getSettings().setJavaScriptEnabled(true);

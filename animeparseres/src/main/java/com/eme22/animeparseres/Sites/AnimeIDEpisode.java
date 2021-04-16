@@ -4,13 +4,12 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.androidnetworking.AndroidNetworking;
-import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.StringRequestListener;
+import com.androidnetworking.common.ANResponse;
 import com.eme22.animeparseres.AnimeParserES;
+import com.eme22.animeparseres.Model.AnimeError;
 import com.eme22.animeparseres.Model.Model;
 import com.eme22.animeparseres.Util.Decode;
 
-import org.json.JSONException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -24,24 +23,20 @@ import java.util.regex.Pattern;
 import static com.eme22.animeparseres.AnimeParserES.TAG;
 
 public class AnimeIDEpisode {
-    public static void fetch(String url, AnimeParserES.OnTaskCompleted onComplete) {
-        Log.d(TAG, "Requesting: "+url);
-        AndroidNetworking.get(url).setUserAgent(AnimeParserES.agent).build().getAsString(new StringRequestListener() {
-            @Override
-            public void onResponse(String response) {
-                Log.d(TAG, "Server Response Successful");
-                Model model = parse(response, url);
-                if (model!=null){
-                    onComplete.onTaskCompleted(model,true);
-                }else onComplete.onError();
-            }
 
-            @Override
-            public void onError(ANError anError) {
-                Log.e(TAG, anError.getLocalizedMessage());
-                onComplete.onError();
-            }
-        });
+    @SuppressWarnings("unchecked")
+    public static Model fetch(String url) throws AnimeError {
+        Log.d(TAG, "Requesting: "+url);
+
+        ANResponse<String> response = AndroidNetworking.get(url).setUserAgent(AnimeParserES.agent).build().executeForString();
+
+        if (response.isSuccess()){
+            Log.d(TAG, "Server Response Successful");
+            return parse(response.getResult(), url);
+        }else {
+            throw new AnimeError(response.getError().getErrorCode());
+        }
+
     }
 
     private static Model parse(String response, String url) {
@@ -78,7 +73,7 @@ public class AnimeIDEpisode {
         String aditionalurl = document.select("a:containsOwn(DESCARGAR)").get(1).attr("href");
         //Log.d(TAG, aditionalurl);
 
-        if (AnimeParserES.addAnimeIDAditionalLinks()){
+        if (AnimeParserES.getInstance().isAnimeIDAditionalLinksEnabled()){
             try {
                 aditional(aditionalurl, links);
             } catch (IOException e) {

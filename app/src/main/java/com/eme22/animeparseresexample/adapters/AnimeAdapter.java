@@ -1,7 +1,6 @@
 package com.eme22.animeparseresexample.adapters;
 
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,19 +11,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
-import com.eme22.animeparseres.AnimeParserES2;
 import com.eme22.animeparseres.Model.MiniModel;
 import com.eme22.animeparseresexample.R;
-import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.util.ArrayList;
-
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.AnimeAdapterViewHolder>{
 

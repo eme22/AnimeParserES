@@ -1,29 +1,19 @@
 package com.eme22.animeparseres.Util;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.util.Log;
-import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.eme22.animeparseres.AnimeParserES;
-import com.eme22.animeparseres.Model.AnimeError;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import static com.eme22.animeparseres.AnimeParserES.TAG;

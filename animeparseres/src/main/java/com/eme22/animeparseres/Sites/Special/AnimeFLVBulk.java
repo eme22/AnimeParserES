@@ -1,19 +1,15 @@
 package com.eme22.animeparseres.Sites.Special;
 
-import android.content.Context;
 import android.util.Log;
-import android.webkit.CookieManager;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.ANRequest;
-import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.StringRequestListener;
+import com.androidnetworking.common.ANResponse;
 import com.eme22.animeparseres.AnimeParserES;
+import com.eme22.animeparseres.Model.AnimeError;
 import com.eme22.animeparseres.Model.MiniModel;
 import com.eme22.animeparseres.Model.Model;
 import com.eme22.animeparseres.Model.WebModel;
-import com.eme22.animeparseres.Util.BypassInfo;
-import com.eme22.animeparseres.Util.CFBypass;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -28,59 +24,37 @@ public class AnimeFLVBulk {
 
     private static final String oldPrefix = "https://animeflv.net";
     private static final String urlPrefix = "https://www3.animeflv.net";
-    private static final BypassInfo bp = new BypassInfo();
 
-    public static void fetch(String url, CookieManager cookies, AnimeParserES.OnBulkTaskCompleted onBulkComplete) {
+    @SuppressWarnings("unchecked")
+    public static WebModel fetch(String url, String cookies) throws AnimeError {
 
-        String cookie = cookies.getCookie(url);
+        AnimeParserES.getInstance().setFlvCookies(cookies);
 
-        AnimeParserES.setFlvCookies(cookie);
+        ANResponse<String> response = AndroidNetworking.get(url).addHeaders("cookie", cookies).setUserAgent(AnimeParserES.agent).build().executeForString();
 
-        bp.setCookie(cookie);
+        if (response.isSuccess()){
+            return parse(response.getResult(), url);
+        }else {
+            Log.e(TAG, response.getError().getErrorBody());
+            throw new AnimeError(response.getError().getErrorCode());
+        }
 
-        Log.d("AAAAAAAA", cookie);
-
-        AndroidNetworking.get(url).addHeaders("cookie", cookie).setUserAgent(AnimeParserES.agent).build().getAsString(new StringRequestListener() {
-            @Override
-            public void onResponse(String response) {
-                bp.setIsBypassing(BypassInfo.BypasStatus.SUCCEED);
-                onBulkComplete.onBypass(bp);
-                WebModel model = parse(response, url);
-                onBulkComplete.onTaskCompleted(model);
-            }
-
-            @Override
-            public void onError(ANError anError) {
-                onBulkComplete.onError();
-            }
-        });
     }
 
 
-    public static void fetch(Context context, String url, AnimeParserES.OnBulkTaskCompleted onBulkComplete) {
+    @SuppressWarnings("unchecked")
+    public static WebModel fetch(String url) throws AnimeError {
         ANRequest.GetRequestBuilder a = AndroidNetworking.get(url);
-        String cookies = AnimeParserES.getFlvCookies();
+        String cookies = AnimeParserES.getInstance().getFlvCookies();
         if (cookies != null) a.addHeaders("cookie" , cookies);
-        a.setUserAgent(AnimeParserES.agent).build().getAsString(new StringRequestListener() {
-            @Override
-            public void onResponse(String response) {
-                bp.setIsBypassing(BypassInfo.BypasStatus.NOT_NEEDED);
-                onBulkComplete.onBypass(bp);
-                WebModel model = parse(response, url);
-                onBulkComplete.onTaskCompleted(model);
-            }
+        ANResponse<String> response = a.setUserAgent(AnimeParserES.agent).build().executeForString();
 
-            @Override
-            public void onError(ANError anError) {
-                Log.d(TAG, String.valueOf(anError.getErrorCode()));
-                if (anError.getErrorCode() == 503) {
-                    bp.setIsBypassing(BypassInfo.BypasStatus.BYPASSING);
-                    onBulkComplete.onBypass(bp);
-                    //CFBypass.init(context, url, cookies -> fetch(url, cookies, onBulkComplete));
-                }
-                else onBulkComplete.onError();
-            }
-        });
+        if (response.isSuccess()){
+            return parse(response.getResult(), url);
+        }else {
+            throw new AnimeError(response.getError().getErrorCode());
+        }
+
     }
 
     private static WebModel parse(String response, String url) {

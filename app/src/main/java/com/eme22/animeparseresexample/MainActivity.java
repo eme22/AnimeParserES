@@ -1,6 +1,5 @@
 package com.eme22.animeparseresexample;
 
-import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.os.Bundle;
@@ -9,9 +8,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
-import android.webkit.CookieManager;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,34 +18,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.eme22.animeparseres.AnimeParserES;
-import com.eme22.animeparseres.AnimeParserES2;
 import com.eme22.animeparseres.Model.AnimeError;
 import com.eme22.animeparseres.Model.MiniModel;
 import com.eme22.animeparseres.Model.Model;
 import com.eme22.animeparseres.Model.WebModel;
-import com.eme22.animeparseres.Util.BypassInfo;
-import com.eme22.animeparseres.Util.CFBypass;
-import com.eme22.animeparseres.Util.CFBypassSync;
 import com.eme22.animeparseresexample.adapters.AnimeAdapter;
 import com.eme22.animeparseresexample.adapters.CategoriesAdapter;
 import com.eme22.animeparseresexample.adapters.EpisodeAdapter;
 import com.eme22.animeparseresexample.adapters.LinksAdapter;
 import com.eme22.animeparseresexample.util.CheckInternet;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import okhttp3.Cookie;
-import okhttp3.CookieJar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -74,79 +58,7 @@ public class MainActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.loading);
         anime = findViewById(R.id.model);
         multiple = findViewById(R.id.animelist);
-
-        parserES = new AnimeParserES(this);
-
-        parserES.onFinish(new AnimeParserES.OnBulkTaskCompleted() {
-            @Override
-            public void onTaskCompleted(WebModel animes) {
-                progressBar.setVisibility(View.GONE);
-                loadlist(animes);
-            }
-
-            @Override
-            public void onError() {
-                progressBar.setVisibility(View.GONE);
-                Toast.makeText(MainActivity.this, "ERROR!", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onBypass(BypassInfo info) {
-                switch (info.getIsBypassing()) {
-                    case BYPASSING:{
-                        Log.d("BYPASS", "EJECUTANDO BYPASS");
-                        makesnack("EJECUTANDO BYPASS", true);
-                        break;
-                    }
-                    case SUCCEED:{
-                        Log.d("BYPASS", "BYPASS EJECUTADO CON EXITO");
-                        makesnack("BYPASS EJECUTADO CON EXITO", false);
-                        break;
-                    }
-                    case FAULURE:{
-                        Log.d("BYPASS", "BYPASS FALLIDO");
-                        makesnack("BYPASS FALLIDO", false);
-                        break;
-                    }
-                }
-            }
-        });
-
-        parserES.onFinish(new AnimeParserES.OnTaskCompleted() {
-            @Override
-            public void onTaskCompleted(Model vidURL, boolean episode) {
-                loadanime(vidURL, episode);
-            }
-
-            @Override
-            public void onError() {
-                progressBar.setVisibility(View.GONE);
-                Toast.makeText(MainActivity.this, "ERROR!", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onBypass(BypassInfo bypass){
-                switch (bypass.getIsBypassing()) {
-                    default: break;
-                    case BYPASSING:{
-                        Log.d("BYPASS", "EJECUTANDO BYPASS");
-                        makesnack("EJECUTANDO BYPASS", true);
-                        break;
-                    }
-                    case SUCCEED:{
-                        Log.d("BYPASS", "BYPASS EJECUTADO CON EXITO");
-                        makesnack("BYPASS EJECUTADO CON EXITO", false);
-                        break;
-                    }
-                    case FAULURE:{
-                        Log.d("BYPASS", "BYPASS FALLIDO");
-                        makesnack("BYPASS FALLIDO", false);
-                        break;
-                    }
-                }
-            }
-        });
-
+        parserES = AnimeParserES.getInstance();
         edit_query = findViewById(R.id.edit_query);
 
     }
@@ -169,104 +81,19 @@ public class MainActivity extends AppCompatActivity {
 
     public void flvan(View view){
 
+        letGo("https://www3.animeflv.net/");
 
-/*
-
-        CFBypass.init(findViewById(R.id.aaatest), "https://www3.animeflv.net/", new CFBypass.onResult() {
-            @Override
-            public void onBypassIntent(int method) {
-
-            }
-
-            @Override
-            public void onCookieGrab(CookieManager cookies) {
-                Log.d("Cookies: ", cookies.getCookie("https://www3.animeflv.net/"));
-            }
-
-        });
-
- */
-
-
-        //executor.submit(new CFBypassSync(findViewById(R.id.aaatest),"https://www3.animeflv.net/"));
-
-//        letGo("https://www3.animeflv.net/");
-
-
-        try {
-            AnimeParserES2.getInstance().getForWebsite("https://www3.animeflv.net/", new AnimeParserES2.OnTaskCompleted() {
-                @Override
-                public void onTaskCompleted(Object animes) {
-                    loadlist((WebModel) animes);
-                }
-
-                @Override
-                public void onError(AnimeError error) {
-                    error.printStackTrace();
-                }
-            });
-        } catch (AnimeError error) { error.printStackTrace(); }
-
-        /*executor.submit(() -> {
-            try {
-                AnimeParserES2 parserES2 =AnimeParserES2.getInstance();
-                parserES2.setBypassWebView(findViewById(R.id.aaatest));
-                WebModel model = parserES2.executeForWebSite("https://www3.animeflv.net/");
-                MainActivity.this.runOnUiThread(() -> loadlist(model));
-            } catch (AnimeError error) {
-                error.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (TimeoutException e) {
-                e.printStackTrace();
-            }
-        });
-
-         */
 
 
     }
 
     public void jkan(View view){
-        executor.submit(() -> {
-            try {
-                AnimeParserES2 parserES2 = AnimeParserES2.getInstance();
-                WebModel model = parserES2.executeForWebSite("https://jkanime.net/");
-                MainActivity.this.runOnUiThread(() -> loadlist(model));
-            } catch (AnimeError error) {
-                error.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (TimeoutException e) {
-                e.printStackTrace();
-            }
-        });
-
-        //letGo("https://jkanime.net/");
+        letGo("https://jkanime.net/");
     }
 
     public void idan(View view){
-        executor.submit(() -> {
-            try {
-                AnimeParserES2 parserES2 = AnimeParserES2.getInstance();
-                WebModel model = parserES2.executeForWebSite("https://www.animeid.tv/");
-                MainActivity.this.runOnUiThread(() -> loadlist(model));
-            } catch (AnimeError error) {
-                error.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (TimeoutException e) {
-                e.printStackTrace();
-            }
-        });
 
-        //letGo("https://www.animeid.tv/");
+        letGo("https://www.animeid.tv/");
     }
 
 
@@ -276,20 +103,50 @@ public class MainActivity extends AppCompatActivity {
             if (multiple.getVisibility() == View.VISIBLE) multiple.setVisibility(View.GONE);
             if (anime.getVisibility() == View.VISIBLE) anime.setVisibility(View.GONE);
             //parserES.load(url);
-            executor.submit(() -> {
-                try {
-                    AnimeParserES2 parserES2 = AnimeParserES2.getInstance();
-                    parserES2.setBypassWebView(findViewById(R.id.aaatest));
-                    Model model = parserES2.executeForSingle(url);
-                    MainActivity.this.runOnUiThread(() -> loadanime(model,model.getCategories() == null));
-                } catch (AnimeError error) {
+
+
+            parserES.getAsync(url, new AnimeParserES.OnTaskCompleted() {
+                @Override
+                public void onTaskCompleted(Object animes) {
+                    if (animes instanceof WebModel){
+                        loadlist((WebModel) animes);
+                    }
+                    else loadanime((Model) animes , ((Model) animes).getCategories() == null);
+                }
+
+                @Override
+                public void onError(AnimeError error) {
                     error.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
             });
+
+
+            /*
+            executor.submit(() -> {
+                parserES.setBypassWebView(findViewById(R.id.aaatest));
+                Object animes = null;
+                try {
+                    animes = parserES.getSync(url);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (AnimeError error) {
+                    error.printStackTrace();
+                }
+                if (animes instanceof WebModel){
+                    Object finalAnimes = animes;
+                    MainActivity.this.runOnUiThread(() -> loadlist((WebModel) finalAnimes));
+                }
+                else {
+                    Object finalAnimes1 = animes;
+                    MainActivity.this.runOnUiThread(() -> loadanime((Model) finalAnimes1, ((Model) finalAnimes1).getCategories() == null));
+                }
+            });
+
+             */
+
+
         }
     }
 
