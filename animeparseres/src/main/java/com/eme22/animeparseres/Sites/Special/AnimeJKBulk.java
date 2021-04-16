@@ -31,6 +31,7 @@ public class AnimeJKBulk {
         if (response.isSuccess()){
             return parse(response.getResult(), url);
         }else {
+            Log.e(TAG, response.getError().getLocalizedMessage());
             throw new AnimeError(response.getError().getErrorCode());
         }
 
