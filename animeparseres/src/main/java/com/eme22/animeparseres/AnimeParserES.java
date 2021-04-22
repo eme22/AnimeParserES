@@ -1,5 +1,6 @@
 package com.eme22.animeparseres;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
@@ -34,6 +35,7 @@ public class AnimeParserES {
 
     public static final String TAG = "AnimeParserES";
     public static final String agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36 Edg/89.0.774.76";
+    @SuppressLint("StaticFieldLeak")
     private static AnimeParserES instance;
 
     ExecutorService executorService = Executors.newSingleThreadExecutor();
