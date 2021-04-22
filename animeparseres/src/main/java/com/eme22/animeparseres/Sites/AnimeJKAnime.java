@@ -9,6 +9,7 @@ import com.eme22.animeparseres.AnimeParserES;
 import com.eme22.animeparseres.Model.AnimeError;
 import com.eme22.animeparseres.Model.MiniModel;
 import com.eme22.animeparseres.Model.Model;
+import com.eme22.animeparseres.Util.Util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,7 +42,7 @@ public class AnimeJKAnime {
 
     }
 
-    private static Model parse(String response, String url) {
+    private static Model parse(String response, String url) throws AnimeError {
         Model data = new Model();
         Document document = Jsoup.parse(response);
 
@@ -49,10 +50,23 @@ public class AnimeJKAnime {
         String title = detailtext.select("div[class=anime__details__title]").text();
         String image = detailtext.select("div[class=anime__details__pic set-bg]").attr("data-setbg");
         String description = detailtext.select("p").text();
-        String[] altern = document.select("div[class*=alternativost]").select("b[class=t]").eachText().toArray(new String[0]);
-
+        Elements alterntemp = document.select("div[class*=alternativost]");
+        alterntemp.select("b[class=t]").remove();
+        alterntemp.select("h5").remove();
+        String[] altern = Util.parseAlternatives(alterntemp.text());
         Elements typeanddate = detailtext.select("div[class=anime__details__widget]");
-        String tipo = typeanddate.select("li").first().text().replace("Tipo: ","");
+        String tipo;
+        try {
+            tipo = typeanddate.select("li").first().text().replace("Tipo: ","");
+        } catch (NullPointerException e){
+            AnimeError error = new AnimeError();
+            error.setHtml(response);
+            error.setMessage("NullPointerException thrown invalid webpage!");
+            error.setErrorCode(5);
+            throw error;
+        }
+
+
 
         ArrayList<Pair<String,String>> categories = new ArrayList<>();
         Elements categories2 = typeanddate.select("li").get(1).select("a");

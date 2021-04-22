@@ -1,9 +1,30 @@
 package com.eme22.animeparseres.Model;
 
+import androidx.annotation.Nullable;
+
 public class AnimeError extends Throwable {
 
-    Model.SERVER server;
+    @Nullable
+    @Override
+    public String getMessage() {
+        return message;
+    }
 
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getHtml() {
+        return html;
+    }
+
+    public void setHtml(String html) {
+        this.html = html;
+    }
+
+    Model.SERVER server;
+    String message;
+    String html;
     int ErrorCode;
 
     public Model.SERVER getServer() {

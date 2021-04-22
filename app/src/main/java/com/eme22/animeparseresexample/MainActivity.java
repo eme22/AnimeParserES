@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onError(AnimeError error) {
-                    error.printStackTrace();
+                    loaderror();
                 }
             });
 
@@ -148,6 +148,13 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
+    }
+
+    private void loaderror() {
+        progressBar.setVisibility(View.GONE);
+        multiple.setVisibility(View.GONE);
+        anime.setVisibility(View.GONE);
+        Toast.makeText(this,"No se pudo encontrar", Toast.LENGTH_SHORT).show();
     }
 
     public boolean checkInternet() {
@@ -198,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         try {
-            alt.setText(TextUtils.join(", ",vidURL.getAlternativeNames()));
+            alt.setText(TextUtils.join("\n",vidURL.getAlternativeNames()));
         }
         catch (Exception e){
             alttext.setVisibility(View.GONE);

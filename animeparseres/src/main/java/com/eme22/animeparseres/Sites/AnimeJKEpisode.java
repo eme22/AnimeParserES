@@ -8,6 +8,7 @@ import com.androidnetworking.common.ANResponse;
 import com.eme22.animeparseres.AnimeParserES;
 import com.eme22.animeparseres.Model.AnimeError;
 import com.eme22.animeparseres.Model.Model;
+import com.eme22.animeparseres.Util.Util;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -61,7 +62,7 @@ public class AnimeJKEpisode {
         if (matcher.find()){
            String tempep = matcher.group(1);
             if (tempep != null) {
-                episode = Integer.parseInt(tempep);
+                episode = Util.parseEp(tempep);
             }
         }
 

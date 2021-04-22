@@ -1,6 +1,7 @@
 package com.eme22.animeparseres;
 
 import android.content.Context;
+import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.webkit.WebView;
@@ -26,7 +27,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
-import android.os.Handler;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,7 +53,8 @@ public class AnimeParserES {
     private final String animeFLVEpisode = "https?:\\/\\/(www?3\\.)?(animeflv\\.net)\\/(ver)\\/.+";
     private final String animeFLVAnime = "https?:\\/\\/(www?3\\.)?(animeflv\\.net)\\/(anime)\\/.+";
 
-    private final String animeJKEpisode = "https?:\\/\\/(jkanime\\.net)\\/(.+)\\/\\d+(?=\\/)\\/";
+    //private final String animeJKEpisode = "https?:\\/\\/(jkanime\\.net)\\/(.+)\\/\\d+(?=\\/)\\/";
+    private final String animeJKEpisode = "https?:\\/\\/(jkanime\\.net)\\/(.+)\\/(pelicula|\\d+(?=\\/))\\/";
     private final String animeJKAnime = "https?:\\/\\/(jkanime\\.net)\\/(?:(?!genero|buscar|letra).+)\\/";
 
     private final String animeIDEpisode = "https?:\\/\\/(www\\.)?(animeid\\.tv)\\/(v)\\/.+";

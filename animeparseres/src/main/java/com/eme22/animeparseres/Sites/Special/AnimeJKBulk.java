@@ -9,6 +9,7 @@ import com.eme22.animeparseres.Model.AnimeError;
 import com.eme22.animeparseres.Model.MiniModel;
 import com.eme22.animeparseres.Model.Model;
 import com.eme22.animeparseres.Model.WebModel;
+import com.eme22.animeparseres.Util.Util;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -51,7 +52,7 @@ public class AnimeJKBulk {
         ArrayList<MiniModel> episodes = new ArrayList<>();
 
         Elements episodeLinks = document.select("a[class=bloqq]");
-        Elements animeLinks = document.select("div[class=anime__item]");
+        Elements animeLinks = document.select("section[class=contenido spad]").select("div[class=anime__item]");
 
         for (Element episode: episodeLinks) {
             MiniModel episode2 = new MiniModel();
@@ -59,7 +60,7 @@ public class AnimeJKBulk {
             String title = episode.select("h5").text();
             String image = episode.select("img").attr("src");
             String episodenumtemp = link2.split("/")[4];
-            int episodenum = Integer.parseInt(episodenumtemp);
+            int episodenum = Util.parseEp(episodenumtemp);
             episode2.setTitle(title);
             episode2.setEpisode(episodenum);
             episode2.setImage(image);
@@ -100,4 +101,6 @@ public class AnimeJKBulk {
 
         return data;
     }
+
+
 }
