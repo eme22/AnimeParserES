@@ -38,7 +38,7 @@ afterEvaluate {
             maven(MavenPublication) {
                 groupId = 'com.eme22'
                 artifactId = 'animeparseres'
-                version = '0.0.3'
+                version = '0.0.6'
 
                 from components.release
             }
