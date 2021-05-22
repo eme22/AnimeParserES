@@ -90,10 +90,10 @@
         android:visibility="gone" />
 
     <WebView
-        android:id="@+id/aaatest"
+        android:id="@+id/bypassWebview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/head"
+        android:layout_height="300dp"
+        android:layout_alignParentBottom="true"
         android:visibility="gone" />
 
 

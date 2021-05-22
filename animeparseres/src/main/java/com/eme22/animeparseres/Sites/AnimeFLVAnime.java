@@ -8,6 +8,7 @@ import com.androidnetworking.common.ANRequest;
 import com.androidnetworking.common.ANResponse;
 import com.eme22.animeparseres.AnimeParserES;
 import com.eme22.animeparseres.Model.AnimeError;
+import com.eme22.animeparseres.Model.AnimeResponse;
 import com.eme22.animeparseres.Model.MiniModel;
 import com.eme22.animeparseres.Model.Model;
 
@@ -25,41 +26,31 @@ import static com.eme22.animeparseres.AnimeParserES.TAG;
 
 public class AnimeFLVAnime {
 
-
-
     private static final String urlPrefix = "https://www3.animeflv.net";
 
     @SuppressWarnings("unchecked")
-    public static Model fetch(String url, String cookies) throws AnimeError {
+    public static AnimeResponse<Model> fetch(String url, String cookies) {
         Log.d(TAG, "Requesting: "+url);
         AnimeParserES.getInstance().setFlvCookies(cookies);
-
         ANResponse<String> response = AndroidNetworking.get(url).addHeaders("cookie", cookies).setUserAgent(AnimeParserES.agent).build().executeForString();
-
         if (response.isSuccess()){
-            Log.d(TAG, "Server Response Successful");
-            return parse(response.getResult(), url);
+            return new AnimeResponse<>(parse(response.getResult(), url));
         }else {
-            throw new AnimeError(response.getError().getErrorCode());
+            return new AnimeResponse<>(new AnimeError(Model.SERVER.ANIMEFLV,response.getError()));
         }
-
     }
 
     @SuppressWarnings("unchecked")
-    public static Model fetch(String url) throws AnimeError {
+    public static AnimeResponse<Model> fetch(String url) {
         Log.d(TAG, "Requesting: "+url);
-
         ANRequest.GetRequestBuilder a = AndroidNetworking.get(url);
         String cookies = AnimeParserES.getInstance().getFlvCookies();
         if (cookies != null) a.addHeaders("cookie" , cookies);
-
         ANResponse<String> response = a.setUserAgent(AnimeParserES.agent).build().executeForString();
-
         if (response.isSuccess()){
-            Log.d(TAG, "Server Response Successful");
-            return parse(response.getResult(), url);
+            return new AnimeResponse<>(parse(response.getResult(), url));
         }else {
-            throw new AnimeError(response.getError().getErrorCode());
+            return new AnimeResponse<>(new AnimeError(Model.SERVER.ANIMEFLV,response.getError()));
         }
     }
 

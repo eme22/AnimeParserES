@@ -7,6 +7,7 @@ import com.androidnetworking.common.ANRequest;
 import com.androidnetworking.common.ANResponse;
 import com.eme22.animeparseres.AnimeParserES;
 import com.eme22.animeparseres.Model.AnimeError;
+import com.eme22.animeparseres.Model.AnimeResponse;
 import com.eme22.animeparseres.Model.MiniModel;
 import com.eme22.animeparseres.Model.Model;
 import com.eme22.animeparseres.Model.WebModel;
@@ -16,6 +17,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static com.eme22.animeparseres.AnimeParserES.TAG;
@@ -26,36 +28,30 @@ public class AnimeFLVBulk {
     private static final String urlPrefix = "https://www3.animeflv.net";
 
     @SuppressWarnings("unchecked")
-    public static WebModel fetch(String url, String cookies) throws AnimeError {
-
+    public static AnimeResponse<WebModel> fetch(String url, String cookies) {
+        Log.d(TAG, "Requesting: "+url);
         AnimeParserES.getInstance().setFlvCookies(cookies);
-
         ANResponse<String> response = AndroidNetworking.get(url).addHeaders("cookie", cookies).setUserAgent(AnimeParserES.agent).build().executeForString();
-
         if (response.isSuccess()){
-            return parse(response.getResult(), url);
+            return new AnimeResponse<>(parse(response.getResult(), url));
         }else {
-            Log.e(TAG, response.getError().getLocalizedMessage());
-            throw new AnimeError(response.getError().getErrorCode());
+            return new AnimeResponse<>(new AnimeError(Model.SERVER.ANIMEFLV,response.getError()));
         }
-
     }
 
 
     @SuppressWarnings("unchecked")
-    public static WebModel fetch(String url) throws AnimeError {
+    public static AnimeResponse<WebModel> fetch(String url) {
+        Log.d(TAG, "Requesting: "+url);
         ANRequest.GetRequestBuilder a = AndroidNetworking.get(url);
         String cookies = AnimeParserES.getInstance().getFlvCookies();
         if (cookies != null) a.addHeaders("cookie" , cookies);
         ANResponse<String> response = a.setUserAgent(AnimeParserES.agent).build().executeForString();
-
         if (response.isSuccess()){
-            return parse(response.getResult(), url);
+            return new AnimeResponse<>(parse(response.getResult(), url));
         }else {
-            Log.e(TAG, response.getError().getLocalizedMessage());
-            throw new AnimeError(response.getError().getErrorCode());
+            return new AnimeResponse<>(new AnimeError(Model.SERVER.ANIMEFLV,response.getError()));
         }
-
     }
 
     private static WebModel parse(String response, String url) {

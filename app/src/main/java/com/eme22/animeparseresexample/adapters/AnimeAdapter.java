@@ -37,7 +37,7 @@ public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.AnimeAdapter
     @Override
     public void onBindViewHolder(@NonNull AnimeAdapter.AnimeAdapterViewHolder holder, int position) {
         MiniModel item = animes.get(position);
-        Log.d("image-aaa", item.getImage()+" aaa");
+        Log.d("image", item.getImage());
         Picasso.get().load(item.getImage()).placeholder(new CircularProgressDrawable(holder.image.getContext())).into(holder.image);
         holder.title.setText(item.getTitle());
     }

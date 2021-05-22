@@ -25,6 +25,7 @@ public class CFBypass {
     @SuppressLint("SetJavaScriptEnabled")
     public static void init(String url, final onResult onDone ){
 
+        Log.d("BYPASS", "INITIALIZING BYPASS");
         onResult = onDone;
         webView = new WebView(AnimeParserES.getInstance().getContext());
         WebSettings myWebSettings = webView.getSettings();
@@ -76,7 +77,6 @@ public class CFBypass {
         handler.removeCallbacks(null);
         destroyWebView();
         Log.d(TAG,"Fucked: " + url);
-
         String cookies = CookieManager.getInstance().getCookie(url);
         onResult.onCookieGrab(cookies);
     }

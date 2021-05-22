@@ -10,6 +10,8 @@ public class AnimeResponse<T> {
 
     private final AnimeError mError;
 
+    private final boolean isSuccess;
+
     public static <T> AnimeResponse<T> success(T result) {
         return new AnimeResponse<>(result);
     }
@@ -20,11 +22,13 @@ public class AnimeResponse<T> {
 
     public AnimeResponse(T mResult) {
         this.mResult = mResult;
+        this.isSuccess = true;
         this.mError = null;
     }
 
     public AnimeResponse(AnimeError mError) {
         this.mResult = null;
+        this.isSuccess = false;
         this.mError = mError;
     }
 

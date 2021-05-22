@@ -4,7 +4,7 @@ import android.util.Pair;
 
 import java.util.ArrayList;
 
-public class Model implements Comparable<Model>{
+public class Model{
 
     public enum TYPES {
         ANIME, OVA, ESPECIAL, PELICULA, ONA, ESPANIOL
@@ -145,9 +145,4 @@ public class Model implements Comparable<Model>{
 
     public void setServer(SERVER server) { this.server = server; }
 
-    @Override
-    public int compareTo(Model o) {
-        if (episode == -1) return 0;
-        else return Integer.compare(this.episode, o.episode);
-    }
 }

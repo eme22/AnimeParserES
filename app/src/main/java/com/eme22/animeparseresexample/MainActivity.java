@@ -19,6 +19,7 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.eme22.animeparseres.AnimeParserES;
 import com.eme22.animeparseres.Model.AnimeError;
+import com.eme22.animeparseres.Model.AnimeResponse;
 import com.eme22.animeparseres.Model.MiniModel;
 import com.eme22.animeparseres.Model.Model;
 import com.eme22.animeparseres.Model.WebModel;
@@ -52,13 +53,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
+        //StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        //StrictMode.setThreadPolicy(policy);
 
         progressBar = findViewById(R.id.loading);
         anime = findViewById(R.id.model);
         multiple = findViewById(R.id.animelist);
         parserES = AnimeParserES.getInstance();
+        parserES.setBypassWebView(findViewById(R.id.bypassWebview));
         edit_query = findViewById(R.id.edit_query);
 
     }
@@ -104,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
             if (anime.getVisibility() == View.VISIBLE) anime.setVisibility(View.GONE);
             //parserES.load(url);
 
-
             parserES.getAsync(url, new AnimeParserES.OnTaskCompleted() {
                 @Override
                 public void onTaskCompleted(Object animes) {
@@ -116,37 +117,35 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onError(AnimeError error) {
-                    loaderror();
+                    loaderror(error.getErrormessage());
                 }
             });
 
 
+
+            // ALTERNATIVE
             /*
             executor.submit(() -> {
-                parserES.setBypassWebView(findViewById(R.id.aaatest));
-                Object animes = null;
-                try {
-                    animes = parserES.getSync(url);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (AnimeError error) {
-                    error.printStackTrace();
-                }
-                if (animes instanceof WebModel){
-                    Object finalAnimes = animes;
-                    MainActivity.this.runOnUiThread(() -> loadlist((WebModel) finalAnimes));
+                AnimeResponse animes = parserES.getSync(url);
+                if (animes.isSuccess()){
+
+                    Object responsemodel = animes.getmResult();
+                    if (responsemodel instanceof WebModel){
+                        MainActivity.this.runOnUiThread(() -> loadlist((WebModel) responsemodel));
+                    }
+                    else if (responsemodel instanceof  Model){
+                        MainActivity.this.runOnUiThread(() -> loadanime((Model) responsemodel, ((Model) responsemodel).getCategories() == null));
+                    }
+                    else {
+                        Log.e("Example", "Unknown Error");
+                        loaderror();
+                    }
                 }
                 else {
-                    Object finalAnimes1 = animes;
-                    MainActivity.this.runOnUiThread(() -> loadanime((Model) finalAnimes1, ((Model) finalAnimes1).getCategories() == null));
+                    loaderror(animes.getmError().getErrormessage());
                 }
             });
-
              */
-
-
         }
     }
 
@@ -155,6 +154,13 @@ public class MainActivity extends AppCompatActivity {
         multiple.setVisibility(View.GONE);
         anime.setVisibility(View.GONE);
         Toast.makeText(this,"No se pudo encontrar", Toast.LENGTH_SHORT).show();
+    }
+
+    private void loaderror(String error) {
+        progressBar.setVisibility(View.GONE);
+        multiple.setVisibility(View.GONE);
+        anime.setVisibility(View.GONE);
+        Toast.makeText(this,"Ha ocurrido un error:\n"+error, Toast.LENGTH_SHORT).show();
     }
 
     public boolean checkInternet() {

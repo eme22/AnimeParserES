@@ -11,12 +11,15 @@ import android.webkit.WebViewClient;
 
 import com.eme22.animeparseres.AnimeParserES;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static com.eme22.animeparseres.AnimeParserES.TAG;
+import static com.eme22.animeparseres.AnimeParserES.getInstance;
 
 public class CFBypassSync implements Callable<String> {
 
@@ -76,9 +79,10 @@ public class CFBypassSync implements Callable<String> {
     @Override
     public String call() {
         webView.post(() -> webView.loadUrl(mUrl));
-        while (cookies == null ){
+        executorService.schedule(this::result,19000, TimeUnit.MILLISECONDS);
+        while (cookies == null || !cookies.contains("cf_clearance") ){
             try {
-                Log.d(TAG,"are your sure that is has not been found?");
+                Log.d(TAG,"are your sure that is has not been found?: ");
                 webView.post(() ->isbypass(webView.getTitle()));
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -90,10 +94,8 @@ public class CFBypassSync implements Callable<String> {
 
     private void isbypass(String title) {
         if (title == null) return;
-        Log.d(TAG, title);
-        if (title.contains("bot"))
-            executorService.schedule(this::result,19000, TimeUnit.MILLISECONDS);
-        else {
+        Log.d(TAG, "Title: "+title);
+        if (!(title.isEmpty() || title.contains("bot"))){
             result();
         }
     }
@@ -101,6 +103,7 @@ public class CFBypassSync implements Callable<String> {
     private void destroyWebView() {
         webView.setWebChromeClient(null);
         webView.setWebViewClient(null);
+        webView.loadUrl("about:blank");
     }
 
     private void result() {
@@ -108,6 +111,18 @@ public class CFBypassSync implements Callable<String> {
             handler.removeCallbacks(null);
             destroyWebView();
             cookies = CookieManager.getInstance().getCookie(mUrl);
+            //log(cookies);
             Log.d(TAG, cookies);
+    }
+
+    private void log(String data) {
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(getInstance().getContext().openFileOutput("cf.log", Context.MODE_PRIVATE));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.getLocalizedMessage());
+        }
     }
 }

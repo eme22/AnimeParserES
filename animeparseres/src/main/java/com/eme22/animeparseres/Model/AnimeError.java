@@ -2,30 +2,16 @@ package com.eme22.animeparseres.Model;
 
 import androidx.annotation.Nullable;
 
-public class AnimeError extends Throwable {
+import com.androidnetworking.error.ANError;
 
-    @Nullable
-    @Override
-    public String getMessage() {
-        return message;
-    }
+public class AnimeError {
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getHtml() {
-        return html;
-    }
-
-    public void setHtml(String html) {
-        this.html = html;
-    }
-
-    Model.SERVER server;
-    String message;
-    String html;
-    int ErrorCode;
+    private String errormessage;
+    private Model.SERVER server;
+    private ANError error;
+    private Exception othererror;
+    private boolean isNetworkError;
+    private boolean isApiError;
 
     public Model.SERVER getServer() {
         return server;
@@ -35,23 +21,72 @@ public class AnimeError extends Throwable {
         this.server = server;
     }
 
-    public int getErrorCode() {
-        return ErrorCode;
+    public ANError getError() {
+        return error;
     }
 
-    public void setErrorCode(int errorCode) {
-        ErrorCode = errorCode;
+    public void setError(ANError error) {
+        this.error = error;
     }
 
-    public AnimeError() {
+    public Exception getOthererror() {
+        return othererror;
     }
 
-    public AnimeError(Model.SERVER server, int errorCode) {
+    public void setOthererror(Exception othererror) {
+        this.othererror = othererror;
+    }
+
+    public boolean isNetworkError() {
+        return isNetworkError;
+    }
+
+    public void setNetworkError(boolean networkError) {
+        isNetworkError = networkError;
+    }
+
+    public boolean isApiError() {
+        return isApiError;
+    }
+
+    public void setApiError(boolean apiError) {
+        isApiError = apiError;
+    }
+
+    public String getErrormessage() {
+        return errormessage;
+    }
+
+    public void setErrormessage(String errormessage) {
+        this.errormessage = errormessage;
+    }
+
+    public AnimeError(Model.SERVER server, ANError error) {
         this.server = server;
-        ErrorCode = errorCode;
+        this.error = error;
+        this.isApiError = false;
+        this.isNetworkError = true;
+        errormessage = error.getLocalizedMessage();
     }
 
-    public AnimeError(int errorCode) {
-        ErrorCode = errorCode;
+    public AnimeError(Model.SERVER server, Exception othererror) {
+        this.server = server;
+        this.othererror = othererror;
+        this.isNetworkError = false;
+        this.isApiError = false;
+        errormessage = othererror.getLocalizedMessage();
+    }
+    public AnimeError(ANError error) {
+        this.error = error;
+        this.isApiError = false;
+        this.isNetworkError = true;
+        errormessage = error.getLocalizedMessage();
+    }
+
+    public AnimeError(Exception othererror) {
+        this.othererror = othererror;
+        this.isNetworkError = false;
+        this.isApiError = false;
+        errormessage = othererror.getLocalizedMessage();
     }
 }

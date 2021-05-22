@@ -6,6 +6,7 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.ANResponse;
 import com.eme22.animeparseres.AnimeParserES;
 import com.eme22.animeparseres.Model.AnimeError;
+import com.eme22.animeparseres.Model.AnimeResponse;
 import com.eme22.animeparseres.Model.MiniModel;
 import com.eme22.animeparseres.Model.Model;
 import com.eme22.animeparseres.Model.WebModel;
@@ -24,18 +25,14 @@ public class AnimeIDBulk {
     private static final String urlprefix = "https://www.animeid.tv";
 
     @SuppressWarnings("unchecked")
-    public static WebModel fetch(String url) throws AnimeError {
+    public static AnimeResponse<WebModel> fetch(String url) {
         Log.d(TAG, "Requesting: "+url);
-
-        ANResponse<String > response = AndroidNetworking.get(url).setUserAgent(AnimeParserES.agent).build().executeForString();
-
+        ANResponse<String> response = AndroidNetworking.get(url).setUserAgent(AnimeParserES.agent).build().executeForString();
         if (response.isSuccess()){
-            return parse(response.getResult(), url);
+            return new AnimeResponse<>(parse(response.getResult(), url));
         }else {
-            Log.e(TAG, response.getError().getLocalizedMessage());
-            throw new AnimeError(response.getError().getErrorCode());
+            return new AnimeResponse<>(new AnimeError(Model.SERVER.ANIMEID,response.getError()));
         }
-
     }
 
     private static WebModel parse(String response, String url) {
