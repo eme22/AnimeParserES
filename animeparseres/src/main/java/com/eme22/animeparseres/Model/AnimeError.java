@@ -66,7 +66,7 @@ public class AnimeError {
         this.error = error;
         this.isApiError = false;
         this.isNetworkError = true;
-        errormessage = error.getLocalizedMessage();
+        errormessage = error.getMessage() == null ? "Codigo de error HTTP: "+error.getErrorCode() : error.getMessage();
     }
 
     public AnimeError(Model.SERVER server, Exception othererror) {
@@ -80,7 +80,7 @@ public class AnimeError {
         this.error = error;
         this.isApiError = false;
         this.isNetworkError = true;
-        errormessage = error.getMessage();
+        errormessage = error.getMessage() == null ? "Codigo de error HTTP: "+error.getErrorCode() : error.getMessage();
     }
 
     public AnimeError(Exception othererror) {
