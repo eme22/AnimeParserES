@@ -111,8 +111,7 @@ public class CFBypassSync implements Callable<String> {
             handler.removeCallbacks(null);
             destroyWebView();
             cookies = CookieManager.getInstance().getCookie(mUrl);
-            //log(cookies);
-            Log.d(TAG, cookies);
+            log(cookies);
     }
 
     private void log(String data) {

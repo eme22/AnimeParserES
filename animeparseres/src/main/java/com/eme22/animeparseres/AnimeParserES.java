@@ -139,71 +139,50 @@ public class AnimeParserES {
 
     public void getForSingle(String url, OnTaskCompleted onTaskCompleted) {
         if (check(animeFLVEpisode,url)){
-            AnimeResponse<Model> response = AnimeFLVEpisode.fetch(url);
-            if (response.isSuccess()){
-                onTaskCompleted.onTaskCompleted(response.getmResult());
-            } else {
-                if (response.getmError().getError().getErrorCode() == 503 && bypassByDefault && bypassWebView != null){
-                    CFBypass.init(url, cookies -> {
-                        AnimeResponse<Model> response_bypass = AnimeFLVEpisode.fetch(url, cookies);
-                        if (response_bypass.isSuccess()){
-                            onTaskCompleted.onTaskCompleted(response_bypass.getmResult());
-                        }
-                        else onTaskCompleted.onError(response_bypass.getmError());
-                    });
+            AnimeFLVEpisode.fetch(url, new OnTaskCompleted() {
+                @Override
+                public void onTaskCompleted(Object animes) {
+                    onTaskCompleted.onTaskCompleted(animes);
                 }
-                else onTaskCompleted.onError(response.getmError());
-            }
+                @Override
+                public void onError(AnimeError error) {
+                    if (error.getError().getErrorCode() == 503 && bypassByDefault && bypassWebView != null){
+                        CFBypass.init(url, cookies -> {
+                            AnimeFLVEpisode.fetch(url, cookies,onTaskCompleted);
+                        });
+                    }
+                    else onTaskCompleted.onError(error);
+                }
+            });
         }
         else if (check(animeFLVAnime, url)){
-            AnimeResponse<Model> response = AnimeFLVAnime.fetch(url);
-            if (response.isSuccess()){
-                onTaskCompleted.onTaskCompleted(response.getmResult());
-            } else {
-                if (response.getmError().getError().getErrorCode() == 503 && bypassByDefault && bypassWebView != null){
-                    CFBypass.init(url, cookies -> {
-                        AnimeResponse<Model> response_bypass = AnimeFLVAnime.fetch(url, cookies);
-                        if (response_bypass.isSuccess()){
-                            onTaskCompleted.onTaskCompleted(response_bypass.getmResult());
-                        }
-                        else onTaskCompleted.onError(response_bypass.getmError());
-                    });
+            AnimeFLVAnime.fetch(url, new OnTaskCompleted() {
+                @Override
+                public void onTaskCompleted(Object animes) {
+                    onTaskCompleted.onTaskCompleted(animes);
                 }
-                else onTaskCompleted.onError(response.getmError());
-            }
+                @Override
+                public void onError(AnimeError error) {
+                    if (error.getError().getErrorCode() == 503 && bypassByDefault && bypassWebView != null){
+                        CFBypass.init(url, cookies -> {
+                            AnimeFLVAnime.fetch(url, cookies,onTaskCompleted);
+                        });
+                    }
+                    else onTaskCompleted.onError(error);
+                }
+            });
         }
         else if (check(animeJKEpisode,url)){
-            AnimeResponse<Model> response = AnimeJKEpisode.fetch(url);
-            if (response.isSuccess()){
-                onTaskCompleted.onTaskCompleted(response.getmResult());
-            } else {
-                onTaskCompleted.onError(response.getmError());
-            }
+            AnimeJKEpisode.fetch(url, onTaskCompleted);
         }
         else if (check(animeJKAnime, url)){
-            AnimeResponse<Model> response = AnimeJKAnime.fetch(url);
-            if (response.isSuccess()){
-                onTaskCompleted.onTaskCompleted(response.getmResult());
-            } else {
-                onTaskCompleted.onError(response.getmError());
-            }
+            AnimeJKAnime.fetch(url,onTaskCompleted);
         }
-
         else if (check(animeIDEpisode,url)){
-            AnimeResponse<Model> response = AnimeIDEpisode.fetch(url);
-            if (response.isSuccess()){
-                onTaskCompleted.onTaskCompleted(response.getmResult());
-            } else {
-                onTaskCompleted.onError(response.getmError());
-            }
+            AnimeIDEpisode.fetch(url, onTaskCompleted);
         }
         else if (check(animeIDAnime, url)){
-            AnimeResponse<Model> response = AnimeIDAnime.fetch(url);
-            if (response.isSuccess()){
-                onTaskCompleted.onTaskCompleted(response.getmResult());
-            } else {
-                onTaskCompleted.onError(response.getmError());
-            }
+            AnimeIDAnime.fetch(url, onTaskCompleted);
         }
         /*
         else if (check(animeTioEpisode,url)){
@@ -224,37 +203,27 @@ public class AnimeParserES {
 
     public void getForWebsite(String url, OnTaskCompleted onTaskCompleted) {
         if (url.contains(animeFlV)){
-            AnimeResponse<WebModel> response = AnimeFLVBulk.fetch(url);
-            if (response.isSuccess()){
-                onTaskCompleted.onTaskCompleted(response.getmResult());
-            } else {
-                if (response.getmError().getError().getErrorCode() == 503 && bypassByDefault && bypassWebView != null){
-                    CFBypass.init(url, cookies -> {
-                        AnimeResponse<WebModel> response_bypass = AnimeFLVBulk.fetch(url, cookies);
-                        if (response_bypass.isSuccess()){
-                            onTaskCompleted.onTaskCompleted(response_bypass.getmResult());
-                        }
-                        else onTaskCompleted.onError(response_bypass.getmError());
-                    });
+            AnimeFLVBulk.fetch(url, new OnTaskCompleted(){
+                @Override
+                public void onTaskCompleted(Object animes) {
+                    onTaskCompleted.onTaskCompleted(animes);
                 }
-                else onTaskCompleted.onError(response.getmError());
-            }
+                @Override
+                public void onError(AnimeError error) {
+                    if (error.getError().getErrorCode() == 503 && bypassByDefault && bypassWebView != null){
+                        CFBypass.init(url, cookies -> {
+                            AnimeFLVBulk.fetch(url, cookies,onTaskCompleted);
+                        });
+                    }
+                    else onTaskCompleted.onError(error);
+                }
+            });
         }
         else if (url.contains(animeJK)){
-            AnimeResponse<WebModel> response = AnimeJKBulk.fetch(url);
-            if (response.isSuccess()){
-                onTaskCompleted.onTaskCompleted(response.getmResult());
-            } else {
-                onTaskCompleted.onError(response.getmError());
-            }
+            AnimeJKBulk.fetch(url, onTaskCompleted);
         }
         else if (url.contains(animeID)){
-            AnimeResponse<WebModel> response = AnimeIDBulk.fetch(url);
-            if (response.isSuccess()){
-                onTaskCompleted.onTaskCompleted(response.getmResult());
-            } else {
-                onTaskCompleted.onError(response.getmError());
-            }
+            AnimeIDBulk.fetch(url, onTaskCompleted);
         }
         /*
         else if (url.contains(animeTio)){
@@ -395,71 +364,50 @@ public class AnimeParserES {
 
     public void getAsync(String url, OnTaskCompleted onTaskCompleted) {
         if (check(animeFLVEpisode,url)){
-            AnimeResponse<Model> response = AnimeFLVEpisode.fetch(url);
-            if (response.isSuccess()){
-                onTaskCompleted.onTaskCompleted(response.getmResult());
-            } else {
-                if (response.getmError().getError().getErrorCode() == 503 && bypassByDefault && bypassWebView != null){
-                    CFBypass.init(url, cookies -> {
-                        AnimeResponse<Model> response_bypass = AnimeFLVEpisode.fetch(url, cookies);
-                        if (response_bypass.isSuccess()){
-                            onTaskCompleted.onTaskCompleted(response_bypass.getmResult());
-                        }
-                        else onTaskCompleted.onError(response_bypass.getmError());
-                    });
+            AnimeFLVEpisode.fetch(url, new OnTaskCompleted() {
+                @Override
+                public void onTaskCompleted(Object animes) {
+                    onTaskCompleted.onTaskCompleted(animes);
                 }
-                else onTaskCompleted.onError(response.getmError());
-            }
+                @Override
+                public void onError(AnimeError error) {
+                    if (error.getError().getErrorCode() == 503 && bypassByDefault && bypassWebView != null){
+                        CFBypass.init(url, cookies -> {
+                            AnimeFLVEpisode.fetch(url, cookies,onTaskCompleted);
+                        });
+                    }
+                    else onTaskCompleted.onError(error);
+                }
+            });
         }
         else if (check(animeFLVAnime, url)){
-            AnimeResponse<Model> response = AnimeFLVAnime.fetch(url);
-            if (response.isSuccess()){
-                onTaskCompleted.onTaskCompleted(response.getmResult());
-            } else {
-                if (response.getmError().getError().getErrorCode() == 503 && bypassByDefault && bypassWebView != null){
-                    CFBypass.init(url, cookies -> {
-                        AnimeResponse<Model> response_bypass = AnimeFLVAnime.fetch(url, cookies);
-                        if (response_bypass.isSuccess()){
-                            onTaskCompleted.onTaskCompleted(response_bypass.getmResult());
-                        }
-                        else onTaskCompleted.onError(response_bypass.getmError());
-                    });
+            AnimeFLVAnime.fetch(url, new OnTaskCompleted() {
+                @Override
+                public void onTaskCompleted(Object animes) {
+                    onTaskCompleted.onTaskCompleted(animes);
                 }
-                else onTaskCompleted.onError(response.getmError());
-            }
+                @Override
+                public void onError(AnimeError error) {
+                    if (error.getError().getErrorCode() == 503 && bypassByDefault && bypassWebView != null){
+                        CFBypass.init(url, cookies -> {
+                            AnimeFLVAnime.fetch(url, cookies,onTaskCompleted);
+                        });
+                    }
+                    else onTaskCompleted.onError(error);
+                }
+            });
         }
         else if (check(animeJKEpisode,url)){
-            AnimeResponse<Model> response = AnimeJKEpisode.fetch(url);
-            if (response.isSuccess()){
-                onTaskCompleted.onTaskCompleted(response.getmResult());
-            } else {
-                onTaskCompleted.onError(response.getmError());
-            }
+            AnimeJKEpisode.fetch(url, onTaskCompleted);
         }
         else if (check(animeJKAnime, url)){
-            AnimeResponse<Model> response = AnimeJKAnime.fetch(url);
-            if (response.isSuccess()){
-                onTaskCompleted.onTaskCompleted(response.getmResult());
-            } else {
-                onTaskCompleted.onError(response.getmError());
-            }
+            AnimeJKAnime.fetch(url,onTaskCompleted);
         }
-
         else if (check(animeIDEpisode,url)){
-            AnimeResponse<Model> response = AnimeIDEpisode.fetch(url);
-            if (response.isSuccess()){
-                onTaskCompleted.onTaskCompleted(response.getmResult());
-            } else {
-                onTaskCompleted.onError(response.getmError());
-            }
+            AnimeIDEpisode.fetch(url, onTaskCompleted);
         }
         else if (check(animeIDAnime, url)){
-            AnimeResponse<Model> response = AnimeIDAnime.fetch(url);
-            if (response.isSuccess()){
-                onTaskCompleted.onTaskCompleted(response.getmResult());
-            } else {
-                onTaskCompleted.onError(response.getmError());
-            }
+            AnimeIDAnime.fetch(url, onTaskCompleted);
         }
         /*
         else if (check(animeTioEpisode,url)){
@@ -476,37 +424,27 @@ public class AnimeParserES {
         }
         */
         else if (url.contains(animeFlV)){
-            AnimeResponse<WebModel> response = AnimeFLVBulk.fetch(url);
-            if (response.isSuccess()){
-                onTaskCompleted.onTaskCompleted(response.getmResult());
-            } else {
-                if (response.getmError().getError().getErrorCode() == 503 && bypassByDefault && bypassWebView != null){
-                    CFBypass.init(url, cookies -> {
-                        AnimeResponse<WebModel> response_bypass = AnimeFLVBulk.fetch(url, cookies);
-                        if (response_bypass.isSuccess()){
-                            onTaskCompleted.onTaskCompleted(response_bypass.getmResult());
-                        }
-                        else onTaskCompleted.onError(response_bypass.getmError());
-                    });
+            AnimeFLVBulk.fetch(url, new OnTaskCompleted(){
+                @Override
+                public void onTaskCompleted(Object animes) {
+                    onTaskCompleted.onTaskCompleted(animes);
                 }
-                else onTaskCompleted.onError(response.getmError());
-            }
+                @Override
+                public void onError(AnimeError error) {
+                    if (error.getError().getErrorCode() == 503 && bypassByDefault && bypassWebView != null){
+                        CFBypass.init(url, cookies -> {
+                            AnimeFLVBulk.fetch(url, cookies,onTaskCompleted);
+                        });
+                    }
+                    else onTaskCompleted.onError(error);
+                }
+            });
         }
         else if (url.contains(animeJK)){
-            AnimeResponse<WebModel> response = AnimeJKBulk.fetch(url);
-            if (response.isSuccess()){
-                onTaskCompleted.onTaskCompleted(response.getmResult());
-            } else {
-                onTaskCompleted.onError(response.getmError());
-            }
+            AnimeJKBulk.fetch(url, onTaskCompleted);
         }
         else if (url.contains(animeID)){
-            AnimeResponse<WebModel> response = AnimeIDBulk.fetch(url);
-            if (response.isSuccess()){
-                onTaskCompleted.onTaskCompleted(response.getmResult());
-            } else {
-                onTaskCompleted.onError(response.getmError());
-            }
+            AnimeIDBulk.fetch(url, onTaskCompleted);
         }
         /*
         else if (url.contains(animeTio)){

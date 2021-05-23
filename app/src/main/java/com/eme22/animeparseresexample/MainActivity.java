@@ -112,12 +112,18 @@ public class MainActivity extends AppCompatActivity {
                     if (animes instanceof WebModel){
                         loadlist((WebModel) animes);
                     }
-                    else loadanime((Model) animes , ((Model) animes).getCategories() == null);
+                    else if(animes instanceof Model) {
+                        loadanime((Model) animes, ((Model) animes).getCategories() == null);
+                    }
+                    else {
+                        Log.e("Example", "Unknown Error");
+                        loaderror();
+                    }
                 }
 
                 @Override
                 public void onError(AnimeError error) {
-                    loaderror(error.getErrormessage());
+                    loaderror(error);
                 }
             });
 
@@ -156,11 +162,14 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this,"No se pudo encontrar", Toast.LENGTH_SHORT).show();
     }
 
-    private void loaderror(String error) {
+    private void loaderror(AnimeError error) {
         progressBar.setVisibility(View.GONE);
         multiple.setVisibility(View.GONE);
         anime.setVisibility(View.GONE);
-        Toast.makeText(this,"Ha ocurrido un error:\n"+error, Toast.LENGTH_SHORT).show();
+        String error2;
+        if (error.isApiError()) error2 = error.getOthererror().getMessage();
+        else error2 = error.getErrormessage();
+        Toast.makeText(this,"Ha ocurrido un error:\n"+error2, Toast.LENGTH_SHORT).show();
     }
 
     public boolean checkInternet() {

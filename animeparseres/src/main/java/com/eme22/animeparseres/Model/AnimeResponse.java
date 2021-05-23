@@ -1,9 +1,5 @@
 package com.eme22.animeparseres.Model;
 
-import com.androidnetworking.AndroidNetworking;
-import com.androidnetworking.common.ANResponse;
-import com.androidnetworking.error.ANError;
-
 public class AnimeResponse<T> {
 
     private final T mResult;
@@ -11,14 +7,6 @@ public class AnimeResponse<T> {
     private final AnimeError mError;
 
     private final boolean isSuccess;
-
-    public static <T> AnimeResponse<T> success(T result) {
-        return new AnimeResponse<>(result);
-    }
-
-    public static <T> AnimeResponse<T> failed(AnimeError anError) {
-        return new AnimeResponse<>(anError);
-    }
 
     public AnimeResponse(T mResult) {
         this.mResult = mResult;
@@ -41,7 +29,7 @@ public class AnimeResponse<T> {
     }
 
     public boolean isSuccess() {
-        return mError == null;
+        return isSuccess;
     }
 
 }

@@ -7,6 +7,8 @@ import android.util.Pair;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.ANRequest;
 import com.androidnetworking.common.ANResponse;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.StringRequestListener;
 import com.eme22.animeparseres.AnimeParserES;
 import com.eme22.animeparseres.Model.AnimeError;
 import com.eme22.animeparseres.Model.AnimeResponse;
@@ -59,6 +61,38 @@ public class AnimeFLVEpisode {
         }else {
             return new AnimeResponse<>(new AnimeError(Model.SERVER.ANIMEFLV,response.getError()));
         }
+    }
+
+    public static void fetch(String url, AnimeParserES.OnTaskCompleted onTaskCompleted){
+        Log.d(TAG, "Requesting: "+url);
+        ANRequest.GetRequestBuilder a = AndroidNetworking.get(url);
+        String cookies = AnimeParserES.getInstance().getFlvCookies();
+        if (cookies != null) a.addHeaders("cookie" , cookies);
+        a.setUserAgent(AnimeParserES.agent).build().getAsString(new StringRequestListener() {
+            @Override
+            public void onResponse(String response) {
+                onTaskCompleted.onTaskCompleted(parse(response, url));
+            }
+            @Override
+            public void onError(ANError anError) {
+                onTaskCompleted.onError(new AnimeError(Model.SERVER.ANIMEFLV,anError));
+            }
+        });
+    }
+
+    public static void fetch(String url, String cookies, AnimeParserES.OnTaskCompleted onTaskCompleted){
+        Log.d(TAG, "Requesting: "+url);
+        AnimeParserES.getInstance().setFlvCookies(cookies);
+        AndroidNetworking.get(url).addHeaders("cookie" , cookies).setUserAgent(AnimeParserES.agent).build().getAsString(new StringRequestListener() {
+            @Override
+            public void onResponse(String response) {
+                onTaskCompleted.onTaskCompleted(parse(response, url));
+            }
+            @Override
+            public void onError(ANError anError) {
+                onTaskCompleted.onError(new AnimeError(Model.SERVER.ANIMEFLV,anError));
+            }
+        });
     }
 
     private static Model parse(String response, String url) {
