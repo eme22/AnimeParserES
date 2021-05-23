@@ -74,19 +74,19 @@ public class AnimeError {
         this.othererror = othererror;
         this.isNetworkError = false;
         this.isApiError = false;
-        errormessage = othererror.getLocalizedMessage();
+        errormessage = othererror.getMessage();
     }
     public AnimeError(ANError error) {
         this.error = error;
         this.isApiError = false;
         this.isNetworkError = true;
-        errormessage = error.getLocalizedMessage();
+        errormessage = error.getMessage();
     }
 
     public AnimeError(Exception othererror) {
         this.othererror = othererror;
         this.isNetworkError = false;
         this.isApiError = false;
-        errormessage = othererror.getLocalizedMessage();
+        errormessage = othererror.getMessage();
     }
 }

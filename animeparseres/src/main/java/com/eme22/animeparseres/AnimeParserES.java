@@ -147,8 +147,16 @@ public class AnimeParserES {
                 @Override
                 public void onError(AnimeError error) {
                     if (error.getError().getErrorCode() == 503 && bypassByDefault && bypassWebView != null){
-                        CFBypass.init(url, cookies -> {
-                            AnimeFLVEpisode.fetch(url, cookies,onTaskCompleted);
+                        CFBypass.init(url, new CFBypass.onResult() {
+                            @Override
+                            public void onCookieGrab(String cookies) {
+                                AnimeFLVEpisode.fetch(url, cookies,onTaskCompleted);
+                            }
+
+                            @Override
+                            public void onFailure() {
+                                onTaskCompleted.onError(error);
+                            }
                         });
                     }
                     else onTaskCompleted.onError(error);
@@ -164,8 +172,16 @@ public class AnimeParserES {
                 @Override
                 public void onError(AnimeError error) {
                     if (error.getError().getErrorCode() == 503 && bypassByDefault && bypassWebView != null){
-                        CFBypass.init(url, cookies -> {
+                        CFBypass.init(url, new CFBypass.onResult() {
+                            @Override
+                            public void onCookieGrab(String cookies) {
                             AnimeFLVAnime.fetch(url, cookies,onTaskCompleted);
+                            }
+
+                            @Override
+                            public void onFailure() {
+                                onTaskCompleted.onError(error);
+                            }
                         });
                     }
                     else onTaskCompleted.onError(error);
@@ -211,8 +227,16 @@ public class AnimeParserES {
                 @Override
                 public void onError(AnimeError error) {
                     if (error.getError().getErrorCode() == 503 && bypassByDefault && bypassWebView != null){
-                        CFBypass.init(url, cookies -> {
-                            AnimeFLVBulk.fetch(url, cookies,onTaskCompleted);
+                        CFBypass.init(url, new CFBypass.onResult() {
+                            @Override
+                            public void onCookieGrab(String cookies) {
+                                AnimeFLVBulk.fetch(url, cookies,onTaskCompleted);
+                            }
+
+                            @Override
+                            public void onFailure() {
+                                onTaskCompleted.onError(error);
+                            }
                         });
                     }
                     else onTaskCompleted.onError(error);
@@ -372,8 +396,16 @@ public class AnimeParserES {
                 @Override
                 public void onError(AnimeError error) {
                     if (error.getError().getErrorCode() == 503 && bypassByDefault && bypassWebView != null){
-                        CFBypass.init(url, cookies -> {
+                        CFBypass.init(url, new CFBypass.onResult() {
+                            @Override
+                            public void onCookieGrab(String cookies) {
                             AnimeFLVEpisode.fetch(url, cookies,onTaskCompleted);
+                            }
+
+                            @Override
+                            public void onFailure() {
+                                onTaskCompleted.onError(error);
+                            }
                         });
                     }
                     else onTaskCompleted.onError(error);
@@ -389,8 +421,16 @@ public class AnimeParserES {
                 @Override
                 public void onError(AnimeError error) {
                     if (error.getError().getErrorCode() == 503 && bypassByDefault && bypassWebView != null){
-                        CFBypass.init(url, cookies -> {
-                            AnimeFLVAnime.fetch(url, cookies,onTaskCompleted);
+                        CFBypass.init(url, new CFBypass.onResult() {
+                            @Override
+                            public void onCookieGrab(String cookies) {
+                                AnimeFLVAnime.fetch(url, cookies,onTaskCompleted);
+                            }
+
+                            @Override
+                            public void onFailure() {
+                                onTaskCompleted.onError(error);
+                            }
                         });
                     }
                     else onTaskCompleted.onError(error);
@@ -432,8 +472,16 @@ public class AnimeParserES {
                 @Override
                 public void onError(AnimeError error) {
                     if (error.getError().getErrorCode() == 503 && bypassByDefault && bypassWebView != null){
-                        CFBypass.init(url, cookies -> {
+                        CFBypass.init(url, new CFBypass.onResult() {
+                            @Override
+                            public void onCookieGrab(String cookies) {
                             AnimeFLVBulk.fetch(url, cookies,onTaskCompleted);
+                            }
+
+                            @Override
+                            public void onFailure() {
+                                onTaskCompleted.onError(error);
+                            }
                         });
                     }
                     else onTaskCompleted.onError(error);

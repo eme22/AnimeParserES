@@ -59,7 +59,7 @@ public class CFBypass {
             }
 
         });
-
+        currentTry = 0;
         webView.loadUrl(url);
         handler.postDelayed(timeout,10000);
     }
@@ -73,23 +73,29 @@ public class CFBypass {
 
     private static void destroyWebView() {
         //we.removeAllViews();
-        webView.clearHistory();
-        webView.clearCache(true);
-        webView.onPause();
-        webView.removeAllViews();
-        webView.destroyDrawingCache();
-        webView.pauseTimers();
-        webView.destroy();
-        webView = null;
+        if (webView != null){
+            webView.setWebViewClient(null);
+            webView.setWebChromeClient(null);
+            webView.clearHistory();
+            webView.clearCache(true);
+            webView.onPause();
+            webView.removeAllViews();
+            webView.destroyDrawingCache();
+            webView.pauseTimers();
+            webView.destroy();
+            webView = null;
+        }
     }
 
     private static void result(String url) {
         handler.removeCallbacks(timeout);
-        destroyWebView();
+        Log.d(TAG, "Current Try: "+currentTry);
         Log.d(TAG,"Fucked: " + url);
         String cookies = CookieManager.getInstance().getCookie(url);
         log(cookies);
         if (cookies.contains("cf_clearance")){
+            destroyWebView();
+            Log.d(TAG,"Bypass Successful");
             currentTry = 0;
             onResult.onCookieGrab(cookies);
         }
@@ -98,12 +104,17 @@ public class CFBypass {
                 currentTry++;
                 init(url,onResult);
             }
+            else {
+                destroyWebView();
+                onResult.onFailure();
+            }
         }
     }
 
     public interface onResult{
 
         void onCookieGrab(String cookies);
+        void onFailure();
 
     }
 

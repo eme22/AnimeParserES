@@ -167,8 +167,13 @@ public class MainActivity extends AppCompatActivity {
         multiple.setVisibility(View.GONE);
         anime.setVisibility(View.GONE);
         String error2;
-        if (error.isApiError()) error2 = error.getOthererror().getMessage();
-        else error2 = error.getErrormessage();
+        if (error.isApiError()) {
+            error2 = error.getOthererror().getMessage();
+            Log.e("ERROR", "ES ERROR DE CODIGO");
+        }else {
+            error2 = error.getErrormessage();
+            Log.e("ERROR", "ES ERROR DE NET");
+        }
         Toast.makeText(this,"Ha ocurrido un error:\n"+error2, Toast.LENGTH_SHORT).show();
     }
 
