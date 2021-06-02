@@ -29,6 +29,7 @@ import com.eme22.animeparseresexample.adapters.EpisodeAdapter;
 import com.eme22.animeparseresexample.adapters.LinksAdapter;
 import com.eme22.animeparseresexample.util.CheckInternet;
 import com.google.android.material.snackbar.Snackbar;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -81,22 +82,17 @@ public class MainActivity extends AppCompatActivity {
         letGo(url);
     }
 
-    public void flvan(View view){
-
-        letGo("https://www3.animeflv.net/");
-
-
-
-    }
+    public void flvan(View view){ letGo("https://www3.animeflv.net/"); }
 
     public void jkan(View view){
         letGo("https://jkanime.net/");
     }
 
     public void idan(View view){
-
         letGo("https://www.animeid.tv/");
     }
+
+    public void tioan(View view) { letGo("https://tioanime.com/"); }
 
 
     private void letGo(String url) {
@@ -209,7 +205,17 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView episodes = findViewById(R.id.episodesRecycler);
 
         try {
-            Picasso.get().load(vidURL.getImage()).placeholder(new CircularProgressDrawable(MainActivity.this)).into(image);
+            Picasso.get().load(vidURL.getImage()).placeholder(new CircularProgressDrawable(MainActivity.this)).into(image, new Callback() {
+                @Override
+                public void onSuccess() {
+
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    e.printStackTrace();
+                }
+            });
         }
         catch (Exception e){
             e.printStackTrace();
@@ -257,8 +263,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         try {
-            Double punc = vidURL.getPunctuation();
-            if (punc == null) throw new Exception();
+            double punc = vidURL.getPunctuation();
+            if (punc == 0) throw new Exception();
             else pun.setText(String.valueOf(punc));
         } catch (Exception e){
             puntext.setVisibility(View.GONE);

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.pm.ProviderInfo;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +33,7 @@ public class AnimeParserContentProvider extends ContentProvider {
             throw new NullPointerException("AnimeParserContentProvider ProviderInfo cannot be null.");
         }
         // So if the authorities equal the library internal ones, the developer forgot to set his applicationId
+        Log.d("PARSERES", info.authority);
         if ("<your-library-applicationid>.AnimeParserContentProvider".equals(info.authority)) {
             throw new IllegalStateException("Incorrect provider authority in manifest. Most likely due to a "
                     + "missing applicationId variable in application\'s build.gradle.");

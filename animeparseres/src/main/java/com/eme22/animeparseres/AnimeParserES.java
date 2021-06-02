@@ -19,9 +19,11 @@ import com.eme22.animeparseres.Sites.AnimeIDAnime;
 import com.eme22.animeparseres.Sites.AnimeIDEpisode;
 import com.eme22.animeparseres.Sites.AnimeJKAnime;
 import com.eme22.animeparseres.Sites.AnimeJKEpisode;
+import com.eme22.animeparseres.Sites.AnimeTioAnime;
 import com.eme22.animeparseres.Sites.Special.AnimeFLVBulk;
 import com.eme22.animeparseres.Sites.Special.AnimeIDBulk;
 import com.eme22.animeparseres.Sites.Special.AnimeJKBulk;
+import com.eme22.animeparseres.Sites.Special.AnimeTioBulk;
 import com.eme22.animeparseres.Util.CFBypass;
 import com.eme22.animeparseres.Util.CFBypassSync;
 
@@ -204,9 +206,11 @@ public class AnimeParserES {
         else if (check(animeTioEpisode,url)){
             AnimeTioEpisode.fetch(url, onComplete);
         }
+        */
         else if (check(animeTioAnime, url)){
-            AnimeTioAnime.fetch(url,onComplete);
+            AnimeTioAnime.fetch(url,onTaskCompleted);
         }
+        /*
         else if (check(animeFLVRUEpisode,url)){
             AnimeFLVRUEpisode.fetch(url, onComplete);
         }
@@ -249,12 +253,13 @@ public class AnimeParserES {
         else if (url.contains(animeID)){
             AnimeIDBulk.fetch(url, onTaskCompleted);
         }
-        /*
+
         else if (url.contains(animeTio)){
-            AnimeTioBulk.fetch(url,onBulkComplete);
+            AnimeTioBulk.fetch(url,onTaskCompleted);
         }
+        /*
         else if (url.contains(animeFLVRU)){
-            AnimeFLVRUBulk.fetch(url,onBulkComplete);
+            AnimeFLVRUBulk.fetch(url,onTaskCompleted);
         }
 
          */
@@ -329,9 +334,11 @@ public class AnimeParserES {
         else if (check(animeTioEpisode,url)){
             AnimeTioEpisode.fetch(url, onComplete);
         }
+        */
         else if (check(animeTioAnime, url)){
-            AnimeTioAnime.fetch(url,onComplete);
+            return AnimeTioAnime.fetch(url);
         }
+        /*
         else if (check(animeFLVRUEpisode,url)){
             AnimeFLVRUEpisode.fetch(url, onComplete);
         }
@@ -374,10 +381,10 @@ public class AnimeParserES {
         else if (url.contains(animeID)){
             return AnimeIDBulk.fetch(url);
         }
-        /*
         else if (url.contains(animeTio)){
-            AnimeTioBulk.fetch(url,onBulkComplete);
+            return AnimeTioBulk.fetch(url);
         }
+        /*
         else if (url.contains(animeFLVRU)){
             AnimeFLVRUBulk.fetch(url,onBulkComplete);
         }
@@ -453,9 +460,11 @@ public class AnimeParserES {
         else if (check(animeTioEpisode,url)){
             AnimeTioEpisode.fetch(url, onComplete);
         }
+        */
         else if (check(animeTioAnime, url)){
-            AnimeTioAnime.fetch(url,onComplete);
+            AnimeTioAnime.fetch(url,onTaskCompleted);
         }
+        /*
         else if (check(animeFLVRUEpisode,url)){
             AnimeFLVRUEpisode.fetch(url, onComplete);
         }
@@ -494,10 +503,11 @@ public class AnimeParserES {
         else if (url.contains(animeID)){
             AnimeIDBulk.fetch(url, onTaskCompleted);
         }
-        /*
+
         else if (url.contains(animeTio)){
-            AnimeTioBulk.fetch(url,onBulkComplete);
+            AnimeTioBulk.fetch(url,onTaskCompleted);
         }
+        /*
         else if (url.contains(animeFLVRU)){
             AnimeFLVRUBulk.fetch(url,onBulkComplete);
         }

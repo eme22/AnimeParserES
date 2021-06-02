@@ -15,7 +15,8 @@ public class Model{
     }
 
     // ANIME
-    int internalID;
+    int internalID = 0;
+    int malid = 0;
     String name;
     String[] alternativeNames;
     String image;
@@ -24,7 +25,7 @@ public class Model{
     String url;
     ArrayList<MiniModel> episodes;
     ArrayList<Pair<String,String>> categories;
-    Double punctuation;
+    double punctuation = 0;
 
     //EPISODE
 
@@ -145,4 +146,11 @@ public class Model{
 
     public void setServer(SERVER server) { this.server = server; }
 
+    public int getMalid() {
+        return malid;
+    }
+
+    public void setMalid(int malid) {
+        this.malid = malid;
+    }
 }
