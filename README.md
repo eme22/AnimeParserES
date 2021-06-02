@@ -15,7 +15,7 @@ Agregar esto a sus dependencias en: **build.gradle(app)**
   
 
     dependencies {  
-	    implementation 'com.github.eme22:AnimeParserES:0.0.8'
+	    implementation 'com.github.eme22:AnimeParserES:0.0.9'
     }
     
 Ejemplo: 
