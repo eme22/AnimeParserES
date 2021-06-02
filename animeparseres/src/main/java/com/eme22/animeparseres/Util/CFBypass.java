@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.webkit.CookieManager;
-import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -25,7 +24,6 @@ public class CFBypass {
     @SuppressLint("StaticFieldLeak")
     private static WebView webView;
     private static onResult onResult;
-    private static int maxTries = 1;
     private static int currentTry = 0;
     private static final Handler handler = new Handler(Looper.getMainLooper());
     private static final Runnable timeout = new Runnable() {
@@ -44,13 +42,20 @@ public class CFBypass {
         WebSettings myWebSettings = webView.getSettings();
         myWebSettings.setUserAgentString(AnimeParserES.agent);
         webView.getSettings().setJavaScriptEnabled(true);
+        /*
         webView.setWebChromeClient(new WebChromeClient(){
             @Override
             public void onReceivedTitle(WebView view, String title) {
                 isbypass();
             }
         });
+         */
         webView.setWebViewClient(new WebViewClient(){
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                isbypass();
+            }
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
@@ -74,6 +79,7 @@ public class CFBypass {
     private static void destroyWebView() {
         //we.removeAllViews();
         if (webView != null){
+            /*
             webView.setWebViewClient(null);
             webView.setWebChromeClient(null);
             webView.clearHistory();
@@ -82,6 +88,7 @@ public class CFBypass {
             webView.removeAllViews();
             webView.destroyDrawingCache();
             webView.pauseTimers();
+             */
             webView.destroy();
             webView = null;
         }
@@ -100,7 +107,7 @@ public class CFBypass {
             onResult.onCookieGrab(cookies);
         }
         else {
-            if (currentTry <= maxTries) {
+            if (currentTry <= 1) {
                 currentTry++;
                 init(url,onResult);
             }

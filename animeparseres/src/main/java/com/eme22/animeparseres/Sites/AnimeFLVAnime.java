@@ -114,7 +114,8 @@ public class AnimeFLVAnime {
         for (Element script: scripts) {
             if (script.data().contains("var anime_info = ")) {
 
-                Pattern pattern = Pattern.compile(".*var anime_info = \\[\"(.*?)\",\"(.*?)\",\"(.*?)\"];");
+                //Pattern pattern = Pattern.compile(".*var anime_info = \\[\"(.*?)\",\"(.*?)\",\"(.*?)\"];");
+                Pattern pattern = Pattern.compile(".*var anime_info = \\[\"(.*?)\",\"(.*?)\",\"(.*?)\",*");
                 Matcher matcher = pattern.matcher(script.data());
                 if (matcher.find()){
                     String internal = matcher.group(1);

@@ -4,7 +4,7 @@ plugins {
 }
 
 group='com.eme22'
-version='0.0.8'
+version='0.0.9'
 
 android {
     compileSdkVersion 30
@@ -13,8 +13,8 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 30
-        versionCode 6
-        versionName "0.0.6"
+        versionCode 9
+        versionName "0.0.9"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -38,7 +38,7 @@ afterEvaluate {
             maven(MavenPublication) {
                 groupId = 'com.eme22'
                 artifactId = 'animeparseres'
-                version = '0.0.8'
+                version = '0.0.9'
 
                 from components.release
             }
