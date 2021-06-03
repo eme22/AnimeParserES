@@ -1,5 +1,5 @@
 # AnimeParserES
-libreria para Parsear diferentes paginas de anime en español
+libreria para Parsear diferentes paginas de anime en español y convertirlas en objetos Java
 
 Agregar esto a: **build.gradle(project)**
   
