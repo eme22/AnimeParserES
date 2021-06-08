@@ -100,14 +100,14 @@ public class CFBypass {
         Log.d(TAG,"Fucked: " + url);
         String cookies = CookieManager.getInstance().getCookie(url);
         log(cookies);
-        if (cookies.contains("cf_clearance")){
+        if (cookies.contains("cf_clearance") && url.length() > 26){
             destroyWebView();
             Log.d(TAG,"Bypass Successful");
             currentTry = 0;
             onResult.onCookieGrab(cookies);
         }
         else {
-            if (currentTry <= 1) {
+            if (currentTry <= 2) {
                 currentTry++;
                 init(url,onResult);
             }

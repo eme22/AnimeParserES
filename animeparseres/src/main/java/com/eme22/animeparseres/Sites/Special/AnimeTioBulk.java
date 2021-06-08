@@ -88,7 +88,6 @@ public class AnimeTioBulk {
                 episode.setTitle(matcher.group(1));
                 episode.setEpisode(Integer.parseInt(matcher.group(2)));
             }
-            else continue;
             episode.setImage(image);
             episode.setLink(link2);
             if (!episodes.contains(episode)) episodes.add(episode);

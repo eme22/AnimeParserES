@@ -87,7 +87,6 @@ public class AnimeTioAnime {
                     String malids = matcher.group(1);
                     if (malids != null) malid = Integer.parseInt(malids);
                 }
-                else continue;
             }
 
             if (script.data().contains("var anime_info = ")) {

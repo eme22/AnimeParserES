@@ -32,6 +32,7 @@ public class AnimeFLVBulk {
     @SuppressWarnings("unchecked")
     public static AnimeResponse<WebModel> fetch(String url, String cookies) {
         Log.d(TAG, "Requesting: "+url);
+        Log.d(TAG, "Cookies: "+ cookies);
         AnimeParserES.getInstance().setFlvCookies(cookies);
         ANResponse<String> response = AndroidNetworking.get(url).addHeaders("cookie", cookies).setUserAgent(AnimeParserES.agent).build().executeForString();
         if (response.isSuccess()){
@@ -47,6 +48,7 @@ public class AnimeFLVBulk {
         Log.d(TAG, "Requesting: "+url);
         ANRequest.GetRequestBuilder a = AndroidNetworking.get(url);
         String cookies = AnimeParserES.getInstance().getFlvCookies();
+        Log.d(TAG, "Cookies: "+ cookies);
         if (cookies != null) a.addHeaders("cookie" , cookies);
         ANResponse<String> response = a.setUserAgent(AnimeParserES.agent).build().executeForString();
         if (response.isSuccess()){
@@ -60,6 +62,7 @@ public class AnimeFLVBulk {
         Log.d(TAG, "Requesting: "+url);
         ANRequest.GetRequestBuilder a = AndroidNetworking.get(url);
         String cookies = AnimeParserES.getInstance().getFlvCookies();
+        Log.d(TAG, "Cookies: "+ cookies);
         if (cookies != null) a.addHeaders("cookie" , cookies);
         a.setUserAgent(AnimeParserES.agent).build().getAsString(new StringRequestListener() {
             @Override
@@ -75,6 +78,7 @@ public class AnimeFLVBulk {
 
     public static void fetch(String url, String cookies, AnimeParserES.OnTaskCompleted onTaskCompleted){
         Log.d(TAG, "Requesting: "+url);
+        Log.d(TAG, "Cookies: "+ cookies);
         AnimeParserES.getInstance().setFlvCookies(cookies);
         AndroidNetworking.get(url).addHeaders("cookie" , cookies).setUserAgent(AnimeParserES.agent).build().getAsString(new StringRequestListener() {
             @Override
