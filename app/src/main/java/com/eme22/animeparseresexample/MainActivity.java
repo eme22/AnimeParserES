@@ -282,8 +282,19 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             catstext.setText(episode ? "Links" : "Categorias");
+
+
             if (episode){
-                categories.setAdapter(new LinksAdapter(vidURL.getEpisodeLinks(), category -> Toast.makeText(MainActivity.this, "Link: "+ category.second, Toast.LENGTH_SHORT).show()));
+                categories.setAdapter(new LinksAdapter(vidURL.getEpisodeLinks(), new LinksAdapter.ItemClickListener() {
+                    @Override
+                    public void onItemClick(Pair<String, String> category) {
+                        Toast.makeText(MainActivity.this, "Link: "+ category.second+"\nMantenga presionado para copiar.", Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public void onLongItemClick(String text) {
+                        copy(text);
+                    }
+                }));
             }
             else {
                 categories.setAdapter(new CategoriesAdapter(vidURL.getCategories(), new CategoriesAdapter.ItemClickListener() {
@@ -300,6 +311,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             }
+
         } catch (Exception e){
             catstext.setVisibility(View.GONE);
             categories.setVisibility(View.GONE);

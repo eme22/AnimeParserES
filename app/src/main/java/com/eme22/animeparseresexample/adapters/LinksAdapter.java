@@ -49,11 +49,16 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.CategoriesAd
             super(itemView);
             title = itemView.findViewById(R.id.catname);
             itemView.setOnClickListener(v -> mClickListener.onItemClick(categories.get(getAdapterPosition())));
+            itemView.setOnLongClickListener(v -> {
+                mClickListener.onLongItemClick(categories.get(getAdapterPosition()).second);
+                return true;
+            });
         }
     }
 
     public interface ItemClickListener {
         void onItemClick(Pair<String, String> category);
+        void onLongItemClick(String text);
     }
 
 }
